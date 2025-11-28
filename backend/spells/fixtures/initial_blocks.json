@@ -1,0 +1,67 @@
+[
+  {
+    "model": "spells.targettype",
+    "pk": 1,
+    "fields": {
+      "name": "enemy",
+      "icon": "⚔️"
+    }
+  },
+  {
+    "model": "spells.targettype",
+    "pk": 2,
+    "fields": {
+      "name": "spot",
+      "icon": "🎯"
+    }
+  },
+  {
+    "model": "spells.targettype",
+    "pk": 3,
+    "fields": {
+      "name": "caster",
+      "icon": "🧙"
+    }
+  },
+  {
+    "model": "spells.magicschool",
+    "pk": 1,
+    "fields": {
+      "name": "fire_school",
+      "icon": "🔥"
+    }
+  },
+  {
+    "model": "spells.magicschool",
+    "pk": 2,
+    "fields": {
+      "name": "water_school",
+      "icon": "💧"
+    }
+  },
+  {
+    "model": "spells.magicschool",
+    "pk": 3,
+    "fields": {
+      "name": "air_school",
+      "icon": "💨"
+    }
+  },
+  {
+    "model": "spells.projectileform",
+    "pk": 1,
+    "fields": {
+      "name": "sphere",
+      "icon": "🔮"
+    }
+  },
+  {
+    "model": "spells.projectileform",
+    "pk": 2,
+    "fields": {
+      "name": "pellets",
+      "icon": "✨"
+    }
+  }
+]
+
