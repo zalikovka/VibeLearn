@@ -55,3 +55,13 @@ body::before {
   z-index: 0;
 }
 
+/* Allow scrolling on pages */
+body.page-view {
+  overflow-y: auto;
+}
+
+/* Import other styles */
+@import './header.css';
+@import './pages.css';
+@import './blocks.css';
+

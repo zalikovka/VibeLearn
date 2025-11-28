@@ -11,11 +11,14 @@ import '../../styles/blocks.css';
  * - icon: emoji/icon for the block
  * - options: array of { id, label, icon } for choices
  * - onSelect: callback when option is selected
+ * - onDeleteSingle: callback to delete only this block (slash)
+ * - onDeleteCascade: callback to delete this block and all below (cross)
  * - selectedValue: currently selected value
- * - isFirst: whether this is the first block (no left handle)
+ * - isFirst: whether this is the first block (no left handle, no delete)
  * - isLast: whether this is the last block (no right handle)
  */
 const Block = ({ 
+  id,
   data,
   isConnectable 
 }) => {
@@ -25,11 +28,15 @@ const Block = ({
     options = [], 
     selectedValue, 
     onSelect,
+    onDeleteSingle,
+    onDeleteCascade,
     isFirst = false,
-    showOptions = true
+    showOptions = true,
+    isDeleting = false
   } = data;
 
   const [isEditing, setIsEditing] = useState(!selectedValue);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleOptionClick = (option) => {
     if (onSelect) {
@@ -42,8 +49,46 @@ const Block = ({
     setIsEditing(true);
   };
 
+  const handleDeleteSingle = (e) => {
+    e.stopPropagation();
+    if (onDeleteSingle) {
+      onDeleteSingle(id);
+    }
+  };
+
+  const handleDeleteCascade = (e) => {
+    e.stopPropagation();
+    if (onDeleteCascade) {
+      onDeleteCascade(id);
+    }
+  };
+
   return (
-    <div className={`spell-block ${selectedValue ? 'selected' : ''}`}>
+    <div 
+      className={`spell-block ${selectedValue ? 'selected' : ''} ${isDeleting ? 'deleting' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Delete Buttons - appear on hover (not for first block) */}
+      {!isFirst && isHovered && !isDeleting && (
+        <div className="delete-buttons">
+          <button 
+            className="delete-btn delete-single" 
+            onClick={handleDeleteSingle}
+            title="Delete this block only (keep lower blocks)"
+          >
+            <span className="delete-icon">⊘</span>
+          </button>
+          <button 
+            className="delete-btn delete-cascade" 
+            onClick={handleDeleteCascade}
+            title="Delete this block and all connected blocks below"
+          >
+            <span className="delete-icon">✕</span>
+          </button>
+        </div>
+      )}
+
       {/* Input Handle - connects from previous block */}
       {!isFirst && (
         <Handle
@@ -102,4 +147,3 @@ const Block = ({
 };
 
 export default Block;
-

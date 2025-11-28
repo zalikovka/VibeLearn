@@ -27,12 +27,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third party apps
     'rest_framework',
+    'corsheaders',
     # Local apps
     'spells',
+    'accounts',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,5 +113,19 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
+
+# CORS settings (for development)
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
+CORS_ALLOW_CREDENTIALS = True
+
+# Session settings
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
 
