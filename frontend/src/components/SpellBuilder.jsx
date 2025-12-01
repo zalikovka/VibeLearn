@@ -265,7 +265,7 @@ const SpellBuilder = () => {
   }, [nodes, completedBlocks, handleBlockSelect, handleDeleteSingle, handleDeleteCascade, deletingBlocks]);
 
   return (
-    <div style={{ width: '100%', height: '100%', paddingTop: '60px' }}>
+    <div style={{ width: '100%', height: '100%' }}>
       <ReactFlow
         nodes={nodesWithHandlers}
         edges={edges}
@@ -355,7 +355,7 @@ const SpellSummary = ({ completedBlocks }) => {
 const InstructionsPanel = () => (
   <div style={{
     position: 'absolute',
-    top: '80px',
+    top: '20px',
     left: '20px',
     background: 'linear-gradient(135deg, rgba(61, 41, 20, 0.9), rgba(26, 15, 5, 0.9))',
     border: '1px solid rgba(218, 165, 32, 0.4)',

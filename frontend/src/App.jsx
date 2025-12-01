@@ -97,6 +97,8 @@ function App() {
       <main style={{ 
         flex: 1,
         position: 'relative',
+        marginTop: '60px',
+        height: 'calc(100vh - 60px)',
         overflow: currentPage === 'editor' ? 'hidden' : 'auto'
       }}>
         {renderPage()}
