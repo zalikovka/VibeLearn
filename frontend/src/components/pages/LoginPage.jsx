@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { authApi } from '../../services/api';
 
 const LoginPage = ({ onLogin, onNavigate }) => {
   const [isRegister, setIsRegister] = useState(false);
@@ -9,31 +10,45 @@ const LoginPage = ({ onLogin, onNavigate }) => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (isRegister) {
-      if (formData.password !== formData.confirmPassword) {
-        setError('Passwords do not match');
-        return;
+    try {
+      if (isRegister) {
+        // Validation
+        if (formData.password !== formData.confirmPassword) {
+          setError('Passwords do not match');
+          setLoading(false);
+          return;
+        }
+
+        // Register API call
+        const response = await authApi.register(
+          formData.username,
+          formData.email,
+          formData.password,
+          formData.confirmPassword
+        );
+
+        // Auto-login after registration
+        const loginResponse = await authApi.login(formData.username, formData.password);
+        onLogin(loginResponse.user);
+        onNavigate('editor');
+      } else {
+        // Login API call
+        const response = await authApi.login(formData.username, formData.password);
+        onLogin(response.user);
+        onNavigate('editor');
       }
-      // TODO: API call for registration
-      console.log('Register:', formData);
-    } else {
-      // TODO: API call for login
-      console.log('Login:', formData);
+    } catch (err) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
-
-    // Mock login for now
-    onLogin({
-      username: formData.username,
-      email: formData.email || `${formData.username}@example.com`,
-      spellCount: 0,
-      savedCount: 0
-    });
-    onNavigate('editor');
   };
 
   const handleChange = (e) => {
@@ -63,6 +78,7 @@ const LoginPage = ({ onLogin, onNavigate }) => {
                 onChange={handleChange}
                 placeholder="Enter your wizard name"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -76,6 +92,7 @@ const LoginPage = ({ onLogin, onNavigate }) => {
                   onChange={handleChange}
                   placeholder="your@email.com"
                   required
+                  disabled={loading}
                 />
               </div>
             )}
@@ -89,6 +106,7 @@ const LoginPage = ({ onLogin, onNavigate }) => {
                 onChange={handleChange}
                 placeholder="Your secret spell"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -102,14 +120,15 @@ const LoginPage = ({ onLogin, onNavigate }) => {
                   onChange={handleChange}
                   placeholder="Repeat the spell"
                   required
+                  disabled={loading}
                 />
               </div>
             )}
 
             {error && <div className="form-error">{error}</div>}
 
-            <button type="submit" className="submit-btn">
-              {isRegister ? '✨ Create Account' : '⚡ Enter'}
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? '⏳ Please wait...' : (isRegister ? '✨ Create Account' : '⚡ Enter')}
             </button>
           </form>
 
@@ -117,12 +136,12 @@ const LoginPage = ({ onLogin, onNavigate }) => {
             {isRegister ? (
               <p>
                 Already a wizard?{' '}
-                <button onClick={() => setIsRegister(false)}>Login</button>
+                <button onClick={() => setIsRegister(false)} disabled={loading}>Login</button>
               </p>
             ) : (
               <p>
                 New to the guild?{' '}
-                <button onClick={() => setIsRegister(true)}>Register</button>
+                <button onClick={() => setIsRegister(true)} disabled={loading}>Register</button>
               </p>
             )}
           </div>
@@ -133,4 +152,3 @@ const LoginPage = ({ onLogin, onNavigate }) => {
 };
 
 export default LoginPage;
-

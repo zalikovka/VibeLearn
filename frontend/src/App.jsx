@@ -9,10 +9,30 @@ import {
   GlossaryPage,
   LoginPage
 } from './components/pages';
+import { authApi } from './services/api';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('editor');
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Check authentication status on app load
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const response = await authApi.checkAuth();
+        if (response.authenticated) {
+          setUser(response.user);
+        }
+      } catch (err) {
+        console.log('Not authenticated');
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
 
   // Handle page navigation
   const handleNavigate = (pageId) => {
@@ -22,14 +42,17 @@ function App() {
   // Handle login
   const handleLogin = (userData) => {
     setUser(userData);
-    // TODO: Store in localStorage or handle JWT
   };
 
   // Handle logout
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
     setUser(null);
     setCurrentPage('editor');
-    // TODO: Clear localStorage/JWT
   };
 
   // Update body class for scrolling
